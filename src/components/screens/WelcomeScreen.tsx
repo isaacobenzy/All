@@ -2,16 +2,20 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 
-const WelcomeScreen = ({ navigation }: {navigation:any}) => {
+type Props = {
+  navigation: any;
+};
+
+const WelcomeScreen = ({ navigation }: Props) => {
   const handleGetStarted = () => {
-    navigation.navigate('Login');
+    navigation.navigate('LoginScreen');
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome to Ecommerce App</Text>
       <TouchableOpacity style={styles.button} onPress={handleGetStarted}>
-        <Text style={styles.buttonText}>Get Started</Text>
+        <Text style={styles.buttonText}>Lets Get Started</Text>
       </TouchableOpacity>
     </View>
   );

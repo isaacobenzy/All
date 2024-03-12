@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 
-const LoginScreen = ({ navigation }: {navigation:any}) => {
+
+
+type Props={
+  navigation: any
+}
+
+const LoginScreen = ({ navigation }:Props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+
+ 
 
   const handleLogin = () => {
     // Here you can implement your authentication logic.
@@ -11,7 +20,7 @@ const LoginScreen = ({ navigation }: {navigation:any}) => {
     // You can replace this with your actual authentication logic.
     if (email === 'user@example.com' && password === 'password') {
       // Navigate to the home screen
-      navigation.navigate('Home');
+      navigation.navigate('HomeS');
     } else {
       // Handle login failure, such as showing an error message
       alert('Invalid email or password. Please try again.');
@@ -39,6 +48,13 @@ const LoginScreen = ({ navigation }: {navigation:any}) => {
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.loginLink}
+        onPress={() => {
+          navigation.navigate('Sign in');
+        }}>
+        <Text style={styles.loginText}>New Member? Sign-up</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -65,7 +81,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   button: {
-    backgroundColor: 'blue',
+    backgroundColor: 'orange',
     width: '100%',
     height: 40,
     borderRadius: 5,
@@ -76,6 +92,15 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  loginLink: {
+    marginTop: 10,
+  },
+  loginText: {
+    fontSize: 14,
+    color: 'orange',
+    justifyContent:'center',
+    alignSelf:'center',
   },
 });
 

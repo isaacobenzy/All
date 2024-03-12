@@ -13,6 +13,7 @@ type Props = {
   navigation: any;
 };
 
+
 const SignInScreen = ({navigation}: Props) => {
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
@@ -56,6 +57,13 @@ const SignInScreen = ({navigation}: Props) => {
           }}>
           <Text style={styles.buttonText}>Sign In</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+        style={styles.loginLink}
+        onPress={() => {
+          navigation.navigate('LoginScreen');
+        }}>
+        <Text style={styles.loginText}>Already a Member? Login</Text>
+      </TouchableOpacity>
       </View>
 
       {/* Illustration */}
@@ -113,6 +121,15 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200,
     resizeMode: 'contain',
+  },
+  loginLink: {
+    marginTop: 10,
+  },
+  loginText: {
+    fontSize: 14,
+    color: 'orange',
+    justifyContent:'center',
+    alignSelf:'center',
   },
 });
 

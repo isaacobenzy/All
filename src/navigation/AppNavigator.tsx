@@ -11,7 +11,8 @@ import {createMaterialBottomTabNavigator} from '@react-navigation/material-botto
 import ProductDet from 'react-native-vector-icons/MaterialIcons';
 import UserScreen from '../components/screens/UserScreen';
 import User from "react-native-vector-icons/Feather";
-
+import LoginScreen from '../components/screens/LoginScreen';
+import WelcomeScreen from '../components/screens/WelcomeScreen';
 // import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 /**
@@ -79,13 +80,23 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
 
-      <Stack.Navigator initialRouteName="Sign In">
-        <Stack.Screen name="Sign In" component={SignInScreen} />
+      {/* <Stack.Navigator initialRouteName="LoginScreen">
+        <Stack.Screen name="LoginScreen" component={LoginScreen} />
+        <Stack.Screen
+          name="HomeS"
+          component={HomeStack}
+          options={{headerShown: false}}
+        /> */}
+        <Stack.Navigator initialRouteName="WelcomeScreen">
+        <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
+        <Stack.Screen name="LoginScreen" component={LoginScreen}/>
+        <Stack.Screen name="Sign in" component={SignInScreen}/>
         <Stack.Screen
           name="HomeS"
           component={HomeStack}
           options={{headerShown: false}}
         />
+
 
       </Stack.Navigator>
     </NavigationContainer>
