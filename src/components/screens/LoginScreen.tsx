@@ -1,33 +1,27 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { logIn } from './services/auth'; // Adjust the path as necessary
 
+type Props = {
+ navigation: any;
+};
 
+const LoginScreen = ({ navigation }: Props) => {
+ const [email, setEmail] = useState('');
+ const [password, setPassword] = useState('');
 
-type Props={
-  navigation: any
-}
-
-const LoginScreen = ({ navigation }:Props) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-
- 
-
-  const handleLogin = () => {
-    // Here you can implement your authentication logic.
-    // For demonstration purposes, let's assume the login is successful.
-    // You can replace this with your actual authentication logic.
-    if (email === 'user@example.com' && password === 'password') {
+ const handleLogin = async () => {
+    try {
+      await logIn(email, password);
       // Navigate to the home screen
       navigation.navigate('HomeS');
-    } else {
+    } catch (error) {
       // Handle login failure, such as showing an error message
-      alert('Invalid email or password. Please try again.');
+      Alert.alert('Login Failed', 'Invalid email or password. Please try again.');
     }
-  };
+ };
 
-  return (
+ return (
     <View style={styles.container}>
       <Text style={styles.title}>Ecommerce Login</Text>
       <TextInput
@@ -56,22 +50,22 @@ const LoginScreen = ({ navigation }:Props) => {
         <Text style={styles.loginText}>New Member? Sign-up</Text>
       </TouchableOpacity>
     </View>
-  );
+ );
 };
 
 const styles = StyleSheet.create({
-  container: {
+ container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
-  },
-  title: {
+ },
+ title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-  },
-  input: {
+ },
+ input: {
     width: '100%',
     height: 40,
     borderColor: 'gray',
@@ -79,33 +73,29 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 10,
     paddingHorizontal: 10,
-  },
-  button: {
+ },
+ button: {
     backgroundColor: 'orange',
     width: '100%',
     height: 40,
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  buttonText: {
+ },
+ buttonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
-  },
-  loginLink: {
+ },
+ loginLink: {
     marginTop: 10,
-  },
-  loginText: {
+ },
+ loginText: {
     fontSize: 14,
     color: 'orange',
-    justifyContent:'center',
-    alignSelf:'center',
-  },
+    justifyContent: 'center',
+    alignSelf: 'center',
+ },
 });
 
 export default LoginScreen;
-function alert(arg0: string) {
-  throw new Error('Function not implemented.');
-}
-
