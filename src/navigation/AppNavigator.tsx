@@ -5,7 +5,7 @@ import WelcomeScreen from '../components/screens/WelcomeScreen';
 import LoginScreen from '../components/screens/LoginScreen';
 import SignInScreen from '../components/screens/SignInScreen';
 import HomeScreen from '../components/screens/HomeScreen';
-import { isLoggedIn } from '../services/auth'; // Assuming you have a function to check if the user is logged in
+import { isLoggedIn } from '../components/screens/services/auth'; // Assuming you have a function to check if the user is logged in
 
 const Stack = createStackNavigator();
 
