@@ -1,49 +1,34 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
- View,
- Text,
- TextInput,
- TouchableOpacity,
- StyleSheet,
- Image,
- Animated,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Animated,
 } from 'react-native';
-import { logIn, signUp } from './services/auth'; // Adjust the path as necessary
 
-type Props = {navigation:any;};
+type Props = {
+  navigation: any;
+};
+
 
 const SignInScreen = ({navigation}: Props) => {
- const fadeAnim = React.useRef(new Animated.Value(0)).current;
- const [email, setEmail] = useState('');
- const [password, setPassword] = useState('');
- const [isSignUp, setIsSignUp] = useState(false);
+  const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
- React.useEffect(() => {
+  React.useEffect(() => {
+    // Animating the fade-in effect for the logo
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 1000,
       useNativeDriver: true,
     }).start();
- }, [fadeAnim]);
+  }, [fadeAnim]);
 
- const handleSignInOrSignUp = async () => {
-    try {
-      if (isSignUp) {
-        const user = await signUp(email, password);
-        console.log('User signed up:', user);
-      } else {
-        const user = await logIn(email, password);
-        console.log('User logged in:', user);
-        navigation.navigate('HomeS');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      // Handle the error, e.g., show an error message
-    }
- };
-
- return (
+  return (
     <View style={styles.container}>
+      {/* Logo */}
       <Animated.View style={[styles.logoContainer, {opacity: fadeAnim}]}>
         <Image
           source={require('../../../pictures/refer.png')}
@@ -52,98 +37,100 @@ const SignInScreen = ({navigation}: Props) => {
         <Text style={styles.logoText}>My App</Text>
       </Animated.View>
 
+      {/* Form */}
       <View style={styles.formContainer}>
         <TextInput
           style={[styles.input, {color: 'black'}]}
           placeholder="Email"
           placeholderTextColor={'black'}
-          onChangeText={setEmail}
-          value={email}
         />
         <TextInput
           style={[styles.input, {color: 'black'}]}
           placeholder="Password"
           placeholderTextColor={'black'}
           secureTextEntry={true}
-          onChangeText={setPassword}
-          value={password}
         />
         <TouchableOpacity
           style={styles.button}
-          onPress={handleSignInOrSignUp}>
-          <Text style={styles.buttonText}>{isSignUp ? 'Sign Up' : 'Sign In'}</Text>
+          onPress={() => {
+            navigation.navigate('HomeS');
+          }}>
+          <Text style={styles.buttonText}>Sign In</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.switchLink}
-          onPress={() => setIsSignUp(!isSignUp)}>
-          <Text style={styles.switchText}>{isSignUp ? 'Already a Member? Sign In' : 'New Member? Sign Up'}</Text>
-        </TouchableOpacity>
+        style={styles.loginLink}
+        onPress={() => {
+          navigation.navigate('LoginScreen');
+        }}>
+        <Text style={styles.loginText}>Already a Member? Login</Text>
+      </TouchableOpacity>
       </View>
 
+      {/* Illustration */}
       <Image
         source={require('../../../pictures/signIn.png')}
         style={styles.illustration}
       />
     </View>
- );
+  );
 };
 
 const styles = StyleSheet.create({
- container: {
+  container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'white',
- },
- logoContainer: {
+  },
+  logoContainer: {
     alignItems: 'center',
     marginBottom: 50,
- },
- logo: {
+  },
+  logo: {
     width: 100,
     height: 100,
- },
- logoText: {
+  },
+  logoText: {
     fontSize: 24,
     fontWeight: 'bold',
     marginTop: 10,
- },
- formContainer: {
+  },
+  formContainer: {
     width: '80%',
     marginBottom: 20,
- },
- input: {
+  },
+  input: {
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
     marginBottom: 10,
     paddingLeft: 10,
     borderRadius: 7,
- },
- button: {
+  },
+  button: {
     backgroundColor: 'orange',
     paddingVertical: 10,
     alignItems: 'center',
- },
- buttonText: {
+  },
+  buttonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
- },
- illustration: {
+  },
+  illustration: {
     width: '100%',
     height: 200,
     resizeMode: 'contain',
- },
- switchLink: {
+  },
+  loginLink: {
     marginTop: 10,
- },
- switchText: {
+  },
+  loginText: {
     fontSize: 14,
     color: 'orange',
-    justifyContent: 'center',
-    alignSelf: 'center',
- },
+    justifyContent:'center',
+    alignSelf:'center',
+  },
 });
 
 export default SignInScreen;
