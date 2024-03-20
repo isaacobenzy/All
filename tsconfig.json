@@ -1,7 +1,9 @@
 {
+  "extends": "@react-native/typescript-config/tsconfig.json",
   "compilerOptions": {
     "jsx": "react",
-    "types": ["react","react-native"]
-  },
-  "extends": "@react-native/typescript-config/tsconfig.json"
+    "types": ["react", "react-native"],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
+  }
 }
