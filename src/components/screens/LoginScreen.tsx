@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-
+import { logIn,signUp } from './services/auth';
 
 
 type Props={
@@ -11,21 +11,14 @@ const LoginScreen = ({ navigation }:Props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-
- 
-
-  const handleLogin = () => {
-    // Here you can implement your authentication logic.
-    // For demonstration purposes, let's assume the login is successful.
-    // You can replace this with your actual authentication logic.
-    if (email === 'user@example.com' && password === 'password') {
-      // Navigate to the home screen
-      navigation.navigate('HomeS');
+  const handleLogin = async () => {
+    const success = await logIn(email, password);
+    if (success) {
+       navigation.navigate('HomeS');
     } else {
-      // Handle login failure, such as showing an error message
-      alert('Invalid email or password. Please try again.');
+       alert('Invalid email or password. Please try again.');
     }
-  };
+   };
 
   return (
     <View style={styles.container}>
