@@ -1,52 +1,59 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { logIn,signUp } from './services/auth';
+import { StackNavigationProp } from '@react-navigation/stack';
+import Parse from 'parse/react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Animatable from 'react-native-animatable';
 
+type RootStackParamList = {
+  Task: undefined;
+  // Add other screen names here if necessary
+};
 
-type Props={
-  navigation: any
+type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Task'>;
+
+interface LoginProps {
+  navigation: LoginScreenNavigationProp;
 }
 
-const LoginScreen = ({ navigation }:Props) => {
-  const [email, setEmail] = useState('');
+Parse.setAsyncStorage(AsyncStorage);
+Parse.initialize("248180b4-e828-4e7e-83cf-6240fa9cb41a", "$2a$10$6s1Iv4hhJIzJY4.EcrbmfeOQrkwtwr7wAgXIpjXdi3Z/4FZVRX4q6");
+Parse.serverURL = 'http://127.0.0.1:1337/1';
+
+
+const Login: React.FC<LoginProps> = ({ navigation }) => {
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleLogin = async () => {
-    const success = await logIn(email, password);
-    if (success) {
-       navigation.navigate('HomeS');
-    } else {
-       alert('Invalid email or password. Please try again.');
+    try {
+      const user = await Parse.User.logIn(username, password);
+      navigation.navigate('Task');
+      console.log("Logged in user:", user.id);
+    } catch (error) {
+      setError("Invalid username or password"); // Set an error message here
+      console.error("Error: ", error);
     }
-   };
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Ecommerce Login</Text>
+      <Animatable.Text animation="fadeInDown" style={styles.title}>Login</Animatable.Text>
       <TextInput
         style={styles.input}
-        placeholder="Email"
-        onChangeText={setEmail}
-        value={email}
-        keyboardType="email-address"
-        autoCapitalize="none"
+        placeholder="Username"
+        onChangeText={text => setUsername(text)}
       />
       <TextInput
         style={styles.input}
         placeholder="Password"
-        onChangeText={setPassword}
-        value={password}
         secureTextEntry
+        onChangeText={text => setPassword(text)}
       />
+      {error ? <Text style={styles.error}>{error}</Text> : null}
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.loginLink}
-        onPress={() => {
-          navigation.navigate('Sign in');
-        }}>
-        <Text style={styles.loginText}>New Member? Sign-up</Text>
       </TouchableOpacity>
     </View>
   );
@@ -57,48 +64,38 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    backgroundColor: '#ffffff',
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
     marginBottom: 20,
   },
   input: {
-    width: '100%',
+    width: '80%',
     height: 40,
-    borderColor: 'gray',
     borderWidth: 1,
+    borderColor: '#ccc',
     borderRadius: 5,
     marginBottom: 10,
-    paddingHorizontal: 10,
+    paddingLeft: 10,
   },
   button: {
-    backgroundColor: 'orange',
-    width: '100%',
+    width: '80%',
     height: 40,
-    borderRadius: 5,
+    backgroundColor: '#007bff',
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 5,
+    marginTop: 20,
   },
   buttonText: {
-    color: 'white',
+    color: '#ffffff',
     fontSize: 16,
-    fontWeight: 'bold',
   },
-  loginLink: {
-    marginTop: 10,
-  },
-  loginText: {
-    fontSize: 14,
-    color: 'orange',
-    justifyContent:'center',
-    alignSelf:'center',
+  error: {
+    color: 'red',
+    marginBottom: 10,
   },
 });
 
-export default LoginScreen;
-function alert(arg0: string) {
-  throw new Error('Function not implemented.');
-}
-
+export default Login;

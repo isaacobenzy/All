@@ -1,74 +1,78 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Animated, Alert } from 'react-native';
-import { signUp } from './services/auth';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import Parse from 'parse/react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Animatable from 'react-native-animatable';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-type Props = {
-  navigation: any;
+type RootStackParamList = {
+  Task: undefined;
+  // Add other screen names here if necessary
 };
 
-const SignUpScreen = ({ navigation }: Props) => {
-  const [email, setEmail] = useState('');
+type SignUpScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Task'>;
+
+interface SignUpProps {
+  navigation: SignUpScreenNavigationProp;
+}
+
+Parse.setAsyncStorage(AsyncStorage);
+Parse.initialize("248180b4-e828-4e7e-83cf-6240fa9cb41a", "$2a$10$6s1Iv4hhJIzJY4.EcrbmfeOQrkwtwr7wAgXIpjXdi3Z/4FZVRX4q6");
+Parse.serverURL = 'http://127.0.0.1:1337/1';
+
+
+const SignUp: React.FC<SignUpProps> = ({ navigation }) => {
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const handleSignUp = async () => {
-    if (!email || !password) {
-      Alert.alert('Error', 'Please enter both email and password');
+  
+  const handleSignup = async () => {
+   console.log("Attempting to sign up user...");
+   if (password !== confirmPassword) {
+      setError("Passwords don't match.");
       return;
-    }
-
-    const success = await signUp(email, password);
-    if (success) {
-      navigation.navigate('HomeS');
-    } else {
-      Alert.alert('Error', 'Sign up failed. Please try again.');
-    }
+   }
+  
+   try {
+      const user = new Parse.User();
+      user.set("username", username);
+      user.set("password", password);
+      console.log("Signing up user...");
+      await user.signUp();
+      console.log("Success!", user.id);
+      navigation.navigate('Task');
+   } catch (error) {
+      console.error("Error signing up: ", error);
+      setError("Error signing up");
+   }
   };
-
+  
   return (
     <View style={styles.container}>
-      {/* Logo */}
-      <View style={styles.logoContainer}>
-        <Image
-          source={require('../../../pictures/refer.png')}
-          style={styles.logo}
-        />
-        <Text style={styles.logoText}>My App</Text>
-      </View>
-
-      {/* Form */}
-      <View style={styles.formContainer}>
-        <TextInput
-          style={[styles.input, { color: 'black' }]}
-          placeholder="Email"
-          placeholderTextColor={'black'}
-          onChangeText={text => setEmail(text)}
-        />
-        <TextInput
-          style={[styles.input, { color: 'black' }]}
-          placeholder="Password"
-          placeholderTextColor={'black'}
-          secureTextEntry={true}
-          onChangeText={text => setPassword(text)}
-        />
-        <TouchableOpacity
-          style={styles.button}
-          onPress={handleSignUp}>
-          <Text style={styles.buttonText}>Sign Up</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.loginLink}
-          onPress={() => {
-            navigation.navigate('LoginScreen');
-          }}>
-          <Text style={styles.loginText}>Already a Member? Login</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Illustration */}
-      <Image
-        source={require('../../../pictures/signIn.png')}
-        style={styles.illustration}
+      <Animatable.Text animation="fadeInDown" style={styles.title}>Sign Up</Animatable.Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Username"
+        onChangeText={text => setUsername(text)}
       />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        secureTextEntry
+        onChangeText={text => setPassword(text)}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Confirm Password"
+        secureTextEntry
+        onChangeText={text => setConfirmPassword(text)}
+      />
+      {error ? <Text style={styles.error}>{error}</Text> : null}
+      <TouchableOpacity style={styles.button} onPress={handleSignup}>
+        <Text style={styles.buttonText}>Sign Up</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -78,57 +82,38 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#ffffff',
   },
-  logoContainer: {
-    alignItems: 'center',
-    marginBottom: 50,
-  },
-  logo: {
-    width: 100,
-    height: 100,
-  },
-  logoText: {
+  title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    marginTop: 10,
-  },
-  formContainer: {
-    width: '80%',
     marginBottom: 20,
   },
   input: {
+    width: '80%',
     height: 40,
-    borderColor: 'gray',
     borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
     marginBottom: 10,
     paddingLeft: 10,
-    borderRadius: 7,
   },
   button: {
-    backgroundColor: 'orange',
-    paddingVertical: 10,
+    width: '80%',
+    height: 40,
+    backgroundColor: '#007bff',
+    justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 5,
+    marginTop: 20,
   },
   buttonText: {
-    color: 'white',
+    color: '#ffffff',
     fontSize: 16,
-    fontWeight: 'bold',
   },
-  illustration: {
-    width: '100%',
-    height: 200,
-    resizeMode: 'contain',
-  },
-  loginLink: {
-    marginTop: 10,
-  },
-  loginText: {
-    fontSize: 14,
-    color: 'orange',
-    justifyContent: 'center',
-    alignSelf: 'center',
+  error: {
+    color: 'red',
+    marginBottom: 10,
   },
 });
 
-export default SignUpScreen;
+export default SignUp;
